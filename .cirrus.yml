@@ -10,6 +10,6 @@ task:
       cpu: 8
       memory: 32G
 
-  Checks_script:
-      - curl -sL https://raw.githubusercontent.com/InfidelRahul/twrp-ci/master/scripts/checks.sh | bash
+  Build_script:
+      - curl -sL https://raw.githubusercontent.com/InfidelRahul/twrp-ci/master/build.sh | bash
 
