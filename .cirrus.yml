@@ -11,5 +11,5 @@ task:
       memory: 32G
 
   Checks_script:
-      - curl -sL https://raw.githubusercontent.com/InfidelRahul/twrp-ci/main/scripts/checks.sh | bash
+      - curl -sL https://raw.githubusercontent.com/InfidelRahul/twrp-ci/master/scripts/checks.sh | bash
 
