@@ -87,9 +87,6 @@ build_twrp() {
   else
     mka -j${J_VAL} $TARGET || { echo "ERROR: Failed to Build OrangeFox!" && exit 1; }
   fi
-
-  # Exit
-  exit 0
 }
 
 zip_recovery() {
@@ -104,8 +101,6 @@ zip_recovery() {
   zip -r9 TWRP-${DEVICE}-${TWRP_BUILD_TYPE}.zip *.img || { echo "ERROR: Failed to create ZIP!" && exit 1; }
 
   echo "-- zip created successfully "
-  # Exit
-  exit 0
 }
 
 upload_recovery() {
@@ -164,7 +159,6 @@ BuildStart() {
   local STOP=$(date)
   echo "-- Stop time =$STOP"
   echo "-- Start time=$START"
-  echo "-- Now, clone your device trees to the correct locations!"
   exit 0
 }
 
