@@ -27,7 +27,7 @@ export KERNEL_SOURCE_LINK="https://github.com/InfidelRahul/evergo.git"
 
 # ENV Do Not Change
 export WORK_DIR="$HOME/work"
-export OUT_DIR=$WORK_DIR/BUILDS/"$DEVICE"
+export OUT_DIR="$WORK_DIR/out"
 export KERNEL_DIR="kernel/$OEM/$DEVICE"
 export DT_DIR="device/$OEM/$DEVICE"
 export USE_CCACHE=1
@@ -92,6 +92,63 @@ build_twrp() {
   exit 0
 }
 
+zip_recovery() {
+  # Change to the Output Directory
+  echo "-- Change to the Output Directory: $OUT_DIR/target/product/${DEVICE} "
+  cd $OUT_DIR/target/product/${DEVICE}
+
+  echo "-- Changing Name to twrp.img "
+  mv boot.img twrp-${DEVICE}.img || { echo "ERROR: Failed to Rename!" && exit 1; }
+
+  echo "-- Creating Zip file "
+  zip -r9 TWRP-${DEVICE}-${TWRP_BUILD_TYPE}.zip *.img || { echo "ERROR: Failed to create ZIP!" && exit 1; }
+
+  echo "-- zip created successfully "
+  # Exit
+  exit 0
+}
+
+upload_recovery() {
+
+  # Display a message
+  echo "============================"
+  echo "Uploading the Build..."
+  echo "============================"
+
+  # Change to the Output Directory
+  cd $OUT_DIR/target/product/${DEVICE}
+
+  # Set FILENAME var
+  FILENAME=$(echo $OUTPUT)
+
+  # Upload to oshi.at
+  if [ -z "$TIMEOUT" ]; then
+    TIMEOUT=20160
+  fi
+
+  # Upload to WeTransfer
+  # NOTE: the current Docker Image, "registry.gitlab.com/sushrut1101/docker:latest", includes the 'transfer' binary by Default
+  transfer wet $FILENAME >link.txt || { echo "ERROR: Failed to Upload the Build!" && exit 1; }
+
+  # Mirror to oshi.at
+  curl -T $FILENAME https://oshi.at/${FILENAME}/${OUTPUT} >mirror.txt || { echo "WARNING: Failed to Mirror the Build!"; }
+
+  DL_LINK=$(cat link.txt | grep Download | cut -d\  -f3)
+  MIRROR_LINK=$(cat mirror.txt | grep Download | cut -d\  -f1)
+
+  # Show the Download Link
+  echo "=============================================="
+  echo "Download Link: ${DL_LINK}" || { echo "ERROR: Failed to Upload the Build!"; }
+  echo "Mirror: ${MIRROR_LINK}" || { echo "WARNING: Failed to Mirror the Build!"; }
+  echo "=============================================="
+
+  DATE_L=$(date +%d\ %B\ %Y)
+  DATE_S=$(date +"%T")
+
+  # Exit
+  exit 0
+}
+
 # HOME DIR
 # do all the work!
 BuildStart() {
@@ -101,6 +158,8 @@ BuildStart() {
   source_sync
   device_source_sync
   build_twrp
+  zip_recovery
+  upload_recovery
 
   local STOP=$(date)
   echo "-- Stop time =$STOP"
