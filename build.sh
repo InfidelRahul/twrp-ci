@@ -75,21 +75,26 @@ device_source_sync() {
 # BUILD
 build_twrp() {
   cd $WORK_DIR/
-  echo "-- Compiling a test build for device \"$DEVICE\". This will take a *VERY* long time ..."
+  echo "-- Compiling TWRP Engineering build for device \"$DEVICE\". This may take a *VERY* long time ..."
   echo "-- Start compiling: "
   . build/envsetup.sh
   lunch twrp_${DEVICE}-eng || { echo "ERROR: Failed to lunch the target!" && exit 1; }
 
   if [ -z "$J_VAL" ]; then
-    mka -j$(nproc --all) $TARGET || { echo "ERROR: Failed to Build OrangeFox!" && exit 1; }
+    mka -j$(nproc --all) $TARGET || { echo "ERROR: Failed to Build TWRP!" && exit 1; }
   elif [ "$J_VAL"="0" ]; then
-    mka $TARGET || { echo "ERROR: Failed to Build OrangeFox!" && exit 1; }
+    mka $TARGET || { echo "ERROR: Failed to Build TWRP!" && exit 1; }
   else
-    mka -j${J_VAL} $TARGET || { echo "ERROR: Failed to Build OrangeFox!" && exit 1; }
+    mka -j${J_VAL} $TARGET || { echo "ERROR: Failed to Build TWRP!" && exit 1; }
   fi
 }
 
 zip_recovery() {
+  
+  # Display a message
+  echo "============================"
+  echo "Making ZIP file..."
+  echo "============================"
   # Change to the Output Directory
   echo "-- Change to the Output Directory: $OUT_DIR/target/product/${DEVICE} "
   cd $OUT_DIR/target/product/${DEVICE}
@@ -98,9 +103,10 @@ zip_recovery() {
   mv boot.img twrp-${DEVICE}.img || { echo "ERROR: Failed to Rename!" && exit 1; }
 
   echo "-- Creating Zip file "
-  zip -r9 TWRP-${DEVICE}-${TWRP_BUILD_TYPE}.zip *.img || { echo "ERROR: Failed to create ZIP!" && exit 1; }
+  zip -r9 TWRP-${DEVICE}-${TWRP_BUILD_TYPE}.zip twrp-${DEVICE}.img || { echo "ERROR: Failed to create ZIP!" && exit 1; }
 
   echo "-- zip created successfully "
+
 }
 
 upload_recovery() {
