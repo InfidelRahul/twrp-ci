@@ -103,7 +103,7 @@ zip_recovery() {
   mv boot.img twrp-${DEVICE}.img || { echo "ERROR: Failed to Rename!" && exit 1; }
 
   echo "-- Creating Zip file "
-  zip -r9 TWRP-${DEVICE}-${TWRP_BUILD_TYPE}.zip twrp-${DEVICE}.img || { echo "ERROR: Failed to create ZIP!" && exit 1; }
+  zip -r9 TWRP-${DEVICE}-${TWRP_BUILD_TYPE}.zip twrp-${DEVICE}.img ramdisk.img || { echo "ERROR: Failed to create ZIP!" && exit 1; }
 
   echo "-- zip created successfully "
 
