@@ -3,7 +3,7 @@
 # Sources
 export SOURCE="https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git"
 export SOURCE_BRANCH="twrp-11"
-export DT_LINK="https://github.com/InfidelRahul/android_device_xiaomi_evergo.git"
+export DT_LINK="https://github.com/InfidelRahul/android_device_xiaomi_evergo.git -b reverse"
 
 # Device
 export DEVICE="evergo"
